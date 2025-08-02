@@ -8,9 +8,9 @@ import './Category.css';
 
 // 카테고리 목록 정의 (시트 이름과 일치해야 함)
 const categories = [
-  { name: 'HR', sheetName: 'HR_뉴스' },
-  { name: 'AI', sheetName: 'AI_뉴스' },
-  { name: '개발', sheetName: '개발_뉴스' },
+  { name: 'HR뉴스', sheetName: 'HR' },
+  { name: 'AI뉴스', sheetName: 'AI' },
+  // { name: '개발', sheetName: '개발' },
 ];
 
 const NewsList = () => {
