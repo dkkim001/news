@@ -1,8 +1,8 @@
-// NewsList.jsx
+// 수정된 NewsList.jsx
 import React from 'react';
 import NewsCard from './NewsCard';
 import { useFetchNews } from '../hooks/useFetchNews';
-import '../News.css'; // 공통 스타일 파일 불러오기
+import '../News.css';
 
 const NewsList = () => {
   const { data, loading, error } = useFetchNews();
@@ -21,8 +21,9 @@ const NewsList = () => {
 
   return (
     <div className="news-container">
-      {data.map((item, index) => (
-        <NewsCard key={index} newsItem={item} />
+      {data.map((item) => (
+        // key 값으로 고유한 값(link) 사용
+        <NewsCard key={item.link} newsItem={item} />
       ))}
     </div>
   );
