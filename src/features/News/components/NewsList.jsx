@@ -1,25 +1,11 @@
-// src/components/NewsList.jsx
-
-import React, { useState } from 'react';
+// 수정된 NewsList.jsx
+import React from 'react';
 import NewsCard from './NewsCard';
 import { useFetchNews } from '../hooks/useFetchNews';
-import Modal from './Modal'; // Modal 컴포넌트 불러오기
 import '../News.css';
 
 const NewsList = () => {
   const { data, loading, error } = useFetchNews();
-  const [showModal, setShowModal] = useState(false);
-  const [selectedLink, setSelectedLink] = useState('');
-
-  const handleCardClick = (link) => {
-    setSelectedLink(link);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedLink('');
-  };
 
   if (loading) {
     return <div className="loading">뉴스를 불러오는 중입니다...</div>;
@@ -36,13 +22,9 @@ const NewsList = () => {
   return (
     <div className="news-container">
       {data.map((item) => (
-        <NewsCard 
-          key={item.link} 
-          newsItem={item} 
-          onClick={() => handleCardClick(item.link)}
-        />
+        // key 값으로 고유한 값(link) 사용
+        <NewsCard key={item.link} newsItem={item} />
       ))}
-      <Modal show={showModal} onClose={handleCloseModal} link={selectedLink} />
     </div>
   );
 };
