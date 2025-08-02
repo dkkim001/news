@@ -23,3 +23,4 @@ export const useFetchNews = () => {
 
   return { data, loading, error };
 };
+
