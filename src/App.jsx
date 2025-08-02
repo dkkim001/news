@@ -7,13 +7,13 @@ function App() {
   return (
     <div className="App">
       <header className="app-header">
-        <h1>Google Alerts 뉴스 모음</h1>
+        <h1>News Balance</h1>
       </header>
       <main>
         <NewsList />
       </main>
       <footer>
-        <p>&copy; 2025 Google Alerts 뉴스. 모든 권리 보유.</p>
+        <p>&copy; News Balance.</p>
       </footer>
     </div>
   );
