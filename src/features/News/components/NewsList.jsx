@@ -2,10 +2,9 @@
 
 import React, { useState } from 'react';
 import NewsCard from './NewsCard';
-import { useFetchNews } from '../hooks/useFetchNews'; // useFetchNews 훅 수정
-import Modal from './Modal';
+import { useFetchNews } from '../hooks/useFetchNews';
 import '../News.css';
-import './Category.css'; // 새로운 CSS 파일 불러오기
+import './Category.css';
 
 // 카테고리 목록 정의 (시트 이름과 일치해야 함)
 const categories = [
@@ -17,19 +16,6 @@ const categories = [
 const NewsList = () => {
   const [selectedCategory, setSelectedCategory] = useState(categories[0].sheetName);
   const { data, loading, error } = useFetchNews(selectedCategory);
-
-  const [showModal, setShowModal] = useState(false);
-  const [selectedLink, setSelectedLink] = useState('');
-
-  const handleCardClick = (link) => {
-    setSelectedLink(link);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedLink('');
-  };
 
   return (
     <div>
@@ -58,14 +44,11 @@ const NewsList = () => {
           {data.map((item) => (
             <NewsCard 
               key={item.link} 
-              newsItem={item} 
-              onClick={() => handleCardClick(item.link)}
+              newsItem={item}
             />
           ))}
         </div>
       )}
-
-      <Modal show={showModal} onClose={handleCloseModal} link={selectedLink} />
     </div>
   );
 };
