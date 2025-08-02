@@ -1,6 +1,6 @@
 // newsService.js
-const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID';
-const SHEET_NAME = '시트1'; // 스프레드시트 시트 이름
+const SPREADSHEET_ID = '1e8HHRx4U6OSiITnLaeHyfjQFWuq-g0KHkPbMrnUaY_Y';
+const SHEET_NAME = 'HR'; // 스프레드시트 시트 이름
 
 const PROXY_URL = `https://sheet.best/api/sheets/${SPREADSHEET_ID}/${SHEET_NAME}`;
 

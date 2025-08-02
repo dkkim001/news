@@ -1,6 +1,6 @@
 // useFetchNews.js
 import { useState, useEffect } from 'react';
-import { fetchNewsData } from '../services/newsService';
+import { fetchNewsData } from '../services/NewsService';
 
 export const useFetchNews = () => {
   const [data, setData] = useState([]);
