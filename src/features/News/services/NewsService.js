@@ -9,23 +9,30 @@ export const fetchNewsData = async () => {
         const response = await fetch(PROXY_URL);
         const text = await response.text();
         
-        // Google Sheets API는 JSON 데이터를 이상한 형식으로 감싸서 반환합니다.
-        // `google.visualization.Query.setResponse(` 부분을 제거해야 합니다.
-        const jsonText = text.substring(
-            text.indexOf('({') + 1,
-            text.lastIndexOf('})') + 1
-        );
-        const data = JSON.parse(jsonText);
+        // 응답 텍스트에서 JSON 객체만 추출하는 정규 표현식
+        const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\((.*)\)/s);
+        
+        if (!jsonMatch || !jsonMatch[1]) {
+            throw new Error('Failed to parse Google Sheets response.');
+        }
 
-        // 데이터가 저장된 Rows 배열을 가져옵니다.
+        const data = JSON.parse(jsonMatch[1]);
+
+        if (!data.table || !data.table.rows) {
+            console.error('Invalid data format from Google Sheets:', data);
+            return [];
+        }
+
         const rows = data.table.rows;
         
-        // 실제 사용할 데이터만 추출하여 객체 배열로 변환합니다.
-        const newsData = rows.map(row => ({
-            id: row.c[0] ? row.c[0].v : '',
-            title: row.c[1] ? row.c[1].v : '',
-            link: row.c[2] ? row.c[2].v : '',
-            published_date: row.c[3] ? row.c[3].v : ''
+        // 스프레드시트의 'cols' 순서에 맞게 데이터를 파싱합니다.
+        const newsData = rows.map((row) => ({
+            id: row.c[0]?.v || '',
+            title: row.c[1]?.v || '',
+            source: row.c[2]?.v || '', // '출처'에 해당하는 C열
+            content: row.c[3]?.v || '', // '내용'에 해당하는 D열
+            link: row.c[4]?.v || '', // '링크'에 해당하는 E열
+            published_date: row.c[0]?.f || '', // '추출일시'의 포맷팅된 값 사용
         }));
         
         return newsData;
