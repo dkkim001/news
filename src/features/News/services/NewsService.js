@@ -1,15 +1,22 @@
-// src/services/newsService.js
+// src/services/NewsService.js
 
+// 스프레드시트 ID는 실제 값으로 교체하세요.
 const SPREADSHEET_ID = '1e8HHRx4U6OSiITnLaeHyfjQFWuq-g0KHkPbMrnUaY_Y';
-const SHEET_NAME = 'HR'; // 변경된 시트 이름 사용
-const PROXY_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
-export const fetchNewsData = async () => {
+// sheetName을 인자로 받도록 수정
+export const fetchNewsData = async (sheetName) => {
+    // sheetName이 없으면 기본 뉴스 반환
+    if (!sheetName) {
+        sheetName = 'HR';
+    }
+    
+    // URL에 sheetName을 동적으로 적용
+    const PROXY_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
     try {
         const response = await fetch(PROXY_URL);
         const text = await response.text();
         
-        // 응답 텍스트에서 JSON 객체만 추출하는 정규 표현식
         const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\((.*)\)/s);
         
         if (!jsonMatch || !jsonMatch[1]) {
@@ -25,15 +32,29 @@ export const fetchNewsData = async () => {
 
         const rows = data.table.rows;
         
-        // 스프레드시트의 'cols' 순서에 맞게 데이터를 파싱합니다.
-        const newsData = rows.map((row) => ({
-            id: row.c[0]?.v || '',
-            title: row.c[1]?.v || '',
-            source: row.c[2]?.v || '', // '출처'에 해당하는 C열
-            content: row.c[3]?.v || '', // '내용'에 해당하는 D열
-            link: row.c[4]?.v || '', // '링크'에 해당하는 E열
-            published_date: row.c[0]?.f || '', // '추출일시'의 포맷팅된 값 사용
-        }));
+        const newsData = rows.map((row) => {
+            let originalLink = row.c[4]?.v || '';
+            let extractedLink = '';
+        
+            const splitByUrl = originalLink.split('&url=');
+            if (splitByUrl.length > 1) {
+                const splitByCt = splitByUrl[1].split('&ct=');
+                if (splitByCt.length > 0) {
+                    extractedLink = splitByCt[0];
+                }
+            }
+            
+            const link = extractedLink ? decodeURIComponent(extractedLink) : originalLink;
+
+            return {
+                id: row.c[0]?.v || '',
+                title: row.c[1]?.v || '',
+                source: row.c[2]?.v || '',
+                content: row.c[3]?.v || '',
+                link: link,
+                published_date: row.c[0]?.f || '',
+            };
+        });
         
         return newsData;
     } catch (error) {
